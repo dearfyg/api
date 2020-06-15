@@ -14,4 +14,4 @@
 Route::get('/', function () {
     return view('welcome');
 });
-//我是的大师傅十分大师傅
+Route::get("/test","TestController@test");
