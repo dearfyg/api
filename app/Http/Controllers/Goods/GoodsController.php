@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Model\Goods;
 use DB;
+use Illuminate\Support\Facades\Redis;//使用redis
 class GoodsController extends Controller
 {
     //
@@ -16,5 +17,10 @@ class GoodsController extends Controller
         $info = Goods::find($goods_id);
         $info = DB::table('p_goods')->where(['goods_id'=>$goods_id])->first();
        dd($info);
+    }
+    public function redis(){
+        $key = "name1";
+        $val = redis::get($key);
+        echo "val:".$val;
     }
 }
