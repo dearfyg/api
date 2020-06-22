@@ -40,7 +40,45 @@ class IndexController extends Controller
             $user->reg_time = time();
             $user->save();
             //成功跳转登录页面
-            return redirect("/");
+            return redirect("/index/login");
         }
+    }
+    //登录页面
+    public function login(){
+        return view("login.login");
+    }
+    //登录方法
+    public function logindo(){
+        //接值
+        $password = request()->password;
+        $user_name = request()->user_name;
+        //通过用户名查询数据库中是否有此数据
+        $userInfo= User::where("user_name",$user_name)->first();
+        //查询到后判断密码是否一致
+        if($userInfo){
+            if(password_verify($password,$userInfo->password)){
+                //登录成功更新以下字段：last_login	最后登录时间 last_ip		最后登录的客户端IP
+                $userInfo->last_login=time();
+                $userInfo->last_ip=request()->getClientIp();
+                $userInfo->save();
+                //更新成功则登录
+                if($userInfo){
+                    //存入session
+                    session(["name"=>$userInfo]);
+                    return redirect('/');
+                }
+            }else{
+                //否则提示密码错误
+                return redirect("/index/login")->with("msg","密码错误");
+            }
+        }
+    }
+    //用户个人中心
+    public function user(){
+        $user_id = session("name.user_id");
+        //根据id查询数据
+        $userInfo = User::where("user_id",$user_id)->first();
+        //数据传输前台
+        return view("user/user",["userInfo"=>$userInfo]);
     }
 }
