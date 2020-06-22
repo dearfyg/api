@@ -16,3 +16,6 @@ Route::get('/', function () {
 });
 Route::get("/goods","Goods\GoodsController@details");
 Route::get("/test","Goods\GoodsController@redis");
+
+Route::get("/index/reg","Login\IndexController@reg");//注册
+Route::any("/index/regdo","Login\IndexController@regdo");//注册方法
