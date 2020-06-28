@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Login;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Model\User;
+use Illuminate\Support\Facades\Cookie;
+
 class IndexController extends Controller
 {
     //注册页面
@@ -64,8 +66,10 @@ class IndexController extends Controller
                 //更新成功则登录
                 if($userInfo){
                     //存入session
+                    //setcookie("uid",$userInfo->user_id,time()+3600,"/");
+                    Cookie::queue('uid2',$userInfo->user_name,3600);
                     session(["name"=>$userInfo]);
-                    return redirect('/');
+                    return redirect('/index/user');
                 }
             }else{
                 //否则提示密码错误
@@ -75,6 +79,8 @@ class IndexController extends Controller
     }
     //用户个人中心
     public function user(){
+        $v = Cookie::get('uid2');
+        echo $v;
         $user_id = session("name.user_id");
         //根据id查询数据
         $userInfo = User::where("user_id",$user_id)->first();

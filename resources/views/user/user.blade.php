@@ -10,6 +10,7 @@
 <body>
 <center>
 <table class="table table-bordered">
+    <h2>欢迎，{{Cookie::get("uid2")}}再次回来</h2>
     <caption>用户个人信息</caption>
     <thead>
     <tr>
@@ -25,7 +26,31 @@
         <td>{{$userInfo->user_email}}</td>
         <td>{{$userInfo->reg_time}}</td>
         <td>{{$userInfo->last_login}}</td>
-    </tr>
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     </tbody>
 </table>
 </center>
