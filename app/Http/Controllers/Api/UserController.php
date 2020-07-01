@@ -188,65 +188,39 @@ class UserController extends Controller
         $response = file_get_contents($url);
         echo $response;
     }
-    //验证签名
-    public function serect(){
-        //key值
-        $key = "12262115";
-        //接收数据
-        $data = request()->data;
-        //签名
-        $sign = request()->sign;
-        //目前的签名
-        $now_sign = sha1($data.$key);
-        //判断签名是否一致
-        if($sign==$now_sign){
-            echo "验签通过";
-        }else{
-            echo "验签失败";
-        }
-    }
-    //对称加密
-    public function encrypt(){
-        //数据
-        $data = "我是野爹";
-        //key
-        $key = "1910-api";
-        //加密方法
-        $method = "AES-192-CBC";
-        //初始化向量
-        $vi="ABCDEFGHIJKLMNOP";
-        //加密
-        $encryp = openssl_encrypt($data,$method,$key,OPENSSL_RAW_DATA,$vi);
-        //sign
-        $sign = sha1($encryp.$key);
-        //url
-        $url = "http://api.com/encrypt";
-        //传输的数据
-        $data = [
-            'data'=>$encryp,
-            'sign'=>$sign
-        ];
-        //post传值
-        $response = $this->post($url,$data);
-        echo $response;
-    }
     //非对称加密
-    public function encrypt1(){
-        //数据
-        $data = "野爹";
-        //获取公钥
-        $pub_key = file_get_contents(storage_path('keys/pub.key'));
-        //内容
-        $pub_key = openssl_get_publickey($pub_key);
+    public function encrypt(){
+        //发送的数据
+        $data = "天王盖地虎";
+        echo "口令：".$data."<hr>";
+        //公钥
+        $key_content = file_get_contents(storage_path("keys/b_pub.key"));
+        //获取公钥证书
+        $pub_key = openssl_get_publickey($key_content);
         //加密
         openssl_public_encrypt($data,$en_data,$pub_key);
-        echo "加密后的数据：".$en_data."<hr>";
+        //base64编码
+        $en_data= base64_encode($en_data);
+        $data = [
+            "data"=>$en_data,
+        ];
+        //调用的接口
+        $url = "http://api.com/encrypt1";
+        //调用post传值
+        $response = $this->post($url,$data);
+        //把response转为数组
+        $response =json_decode($response,true);
+        //解密数据
+        //base64转码
+        $ba_data =base64_decode($response["data"]);
         //获取私钥
-        $priv_key = file_get_contents(storage_path("keys/priv.key"));
-        $priv_key = openssl_get_privatekey($priv_key);
-        //反加密
-        openssl_private_decrypt($en_data,$de_data,$priv_key);
-        echo "反加密后的内容：".$de_data;
+        $priv_content = file_get_contents(storage_path("keys/priv.key"));
+        //证书
+        $priv_key = openssl_get_privatekey($priv_content);
+        //解密
+        openssl_private_decrypt($ba_data,$de_data,$priv_key);
+        echo "回令：".$de_data;
+
     }
     //curlpost传值
     public function post($url,$data){

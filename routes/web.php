@@ -36,7 +36,20 @@ Route::middleware(['login',"total"])->prefix('api')->group(function () {
     Route::get("/center","Api\UserController@center");//个人中心
     Route::get("/order","Api\UserController@order");//订单
 });
+
+
 Route::get("sign","Api\UserController@sign");//签名
-Route::get("serect","Api\UserController@serect");//验签
-Route::get("encrypt","Api\UserController@encrypt");//对称加密
-Route::get("encrypt1","Api\UserController@encrypt1");//非对称加密
+Route::get("encrypt","Api\UserController@encrypt");//非对称加密
+
+
+
+/*
+ * 测试
+ * */
+Route::prefix("test")->group(function(){
+    Route::get("/sign","Api\TestController@sign");//签名
+    Route::get("/serect","Api\TestController@serect");//验签
+    Route::get("/encrypt","Api\TestController@encrypt");//对称加密
+    Route::get("/encrypt1","Api\TestController@encrypt1");//非对称加密
+});
+
